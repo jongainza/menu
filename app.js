@@ -71,9 +71,16 @@ const menu = [
     img: "./images/item-9.jpeg",
     desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
   },
+  {
+    id: 10,
+    title: "stake shake and bake",
+    category: "dinner",
+    price: 36.99,
+    img: "./images/item-10.jpeg",
+    desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
+  },
 ];
 const sectionCenter = document.querySelector(".section-center");
-console.log(sectionCenter);
 
 function loadContent(menuItems) {
   let displayMenu = menuItems.map(function (item) {
@@ -94,51 +101,44 @@ function loadContent(menuItems) {
 `;
   });
   displayMenu = displayMenu.join("");
-  console.log(displayMenu);
   sectionCenter.innerHTML = displayMenu;
 }
+function loadBtns() {
+  const categories = menu.reduce(
+    function (cat, item) {
+      if (!cat.includes(item.category)) {
+        cat.push(item.category);
+      }
+      return cat;
+    },
+    ["all"]
+  );
+
+  const buttons = categories
+    .map(function (category) {
+      return `<button class="filter-btn" data-id=${category}>${category}</button>`;
+    })
+    .join("");
+  const btnContainer = document.querySelector(".btn-container");
+  btnContainer.innerHTML = buttons;
+  const btns = btnContainer.querySelectorAll(".filter-btn");
+  btns.forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      const targetItems = e.currentTarget.dataset.id;
+      if (targetItems === "all") {
+        loadContent(menu);
+      } else {
+        const displayItems = menu.filter(function (item) {
+          return item.category === targetItems;
+        });
+        loadContent(displayItems);
+      }
+    });
+  });
+}
+
+// load content
 window.addEventListener("DOMContentLoaded", function () {
   loadContent(menu);
-});
-const btns = document.querySelectorAll(".filter-btn");
-console.log(btns);
-
-// btns.forEach(function (e) {
-//   e.addEventListener("click", function (e) {
-//     console.log(e.currentTarget);
-
-//     const target = e.currentTarget;
-//     if (target.classList.contains("all")) {
-//       loadContent(menu);
-//     } else if (target.classList.contains("breakfast")) {
-//       const breakfast = menu.filter(function (item) {
-//         return item.category === "breakfast";
-//       });
-//       loadContent(breakfast);
-//     } else if (target.classList.contains("lunch")) {
-//       const lunch = menu.filter(function (item) {
-//         return item.category === "lunch";
-//       });
-//       loadContent(lunch);
-//     } else if (target.classList.contains("shakes")) {
-//       const shakes = menu.filter(function (item) {
-//         return item.category === "shakes";
-//       });
-//       loadContent(shakes);
-//     }
-//   });
-// });
-
-btns.forEach(function (btn) {
-  btn.addEventListener("click", function (e) {
-    const targetItems = e.currentTarget.dataset.id;
-    if (targetItems === "all") {
-      loadContent(menu);
-    } else {
-      const displayItems = menu.filter(function (item) {
-        return item.category === targetItems;
-      });
-      loadContent(displayItems);
-    }
-  });
+  loadBtns();
 });
